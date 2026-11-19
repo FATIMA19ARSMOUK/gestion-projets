@@ -1,0 +1,507 @@
+
+.tf-dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: 27px;
+}
+
+.tf-dashboard-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.tf-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 11px;
+  color: #64748b;
+  font-size: 10px;
+  font-weight: 750;
+  letter-spacing: 1.4px;
+}
+
+.tf-live-dot {
+  width: 8px;
+  height: 8px;
+  background: #22c55e;
+  border-radius: 50%;
+  box-shadow: 0 0 0 4px #dcfce7;
+}
+
+.tf-dashboard-heading h1 {
+  margin: 0;
+  color: #172033;
+  font-size: clamp(24px, 3vw, 30px);
+  font-weight: 750;
+  letter-spacing: -1.1px;
+}
+
+.tf-dashboard-heading p,
+.tf-section-heading p {
+  margin: 9px 0 0;
+  color: #64748b;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.tf-primary-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 43px;
+  padding: 0 16px;
+  color: #fff;
+  background: #2563eb;
+  border: 1px solid #2563eb;
+  border-radius: 9px;
+  box-shadow: 0 3px 8px #2563eb20;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 650;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+}
+
+.tf-primary-button:hover {
+  background: #1d4ed8;
+  transform: translateY(-1px);
+}
+
+.tf-demo-notice {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  gap: 7px;
+  padding: 7px 10px;
+  color: #92400e;
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  border-radius: 7px;
+  font-size: 11px;
+}
+
+.tf-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 17px;
+}
+
+.tf-stat-card {
+  min-width: 0;
+  padding: 20px;
+  background: #fff;
+  border: 1px solid #e8edf4;
+  border-radius: 13px;
+  box-shadow: 0 2px 5px #0f172a04;
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+
+.tf-stat-card:hover,
+.tf-project-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 28px #0f172a08;
+}
+
+.tf-stat-top,
+.tf-project-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.tf-stat-icon,
+.tf-project-icon {
+  display: grid;
+  place-items: center;
+  width: 43px;
+  height: 43px;
+  border-radius: 11px;
+}
+
+.tf-stat-icon.blue {
+  color: #2563eb;
+  background: #eff6ff;
+}
+
+.tf-stat-icon.green {
+  color: #059669;
+  background: #ecfdf5;
+}
+
+.tf-stat-icon.orange {
+  color: #d97706;
+  background: #fffbeb;
+}
+
+.tf-stat-icon.purple {
+  color: #7c3aed;
+  background: #f5f3ff;
+}
+
+.tf-more-button {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  color: #94a3b8;
+  background: transparent;
+  border: 0;
+  border-radius: 7px;
+  cursor: pointer;
+}
+
+.tf-more-button:hover {
+  color: #334155;
+  background: #f1f5f9;
+}
+
+.tf-stat-value {
+  margin-top: 20px;
+  color: #172033;
+  font-size: 29px;
+  font-weight: 750;
+  letter-spacing: -1px;
+}
+
+.tf-stat-label {
+  margin-top: 5px;
+  color: #64748b;
+  font-size: 12px;
+}
+
+.tf-stat-change {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 14px;
+  font-size: 10px;
+  font-weight: 650;
+}
+
+.tf-stat-change.blue {
+  color: #2563eb;
+}
+
+.tf-stat-change.green {
+  color: #059669;
+}
+
+.tf-stat-change.orange {
+  color: #d97706;
+}
+
+.tf-stat-change.purple {
+  color: #7c3aed;
+}
+
+.tf-dashboard-section {
+  min-width: 0;
+}
+
+.tf-section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  margin-bottom: 17px;
+}
+
+.tf-section-heading h2 {
+  margin: 0;
+  color: #172033;
+  font-size: 17px;
+  font-weight: 750;
+  letter-spacing: -0.4px;
+}
+
+.tf-section-heading p {
+  margin-top: 5px;
+  font-size: 11px;
+}
+
+.tf-text-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #2563eb;
+  text-decoration: none;
+  white-space: nowrap;
+  font-size: 11px;
+  font-weight: 650;
+}
+
+.tf-text-link:hover {
+  color: #1d4ed8;
+}
+
+.tf-project-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 17px;
+}
+
+.tf-project-card {
+  min-width: 0;
+  padding: 20px;
+  background: #fff;
+  border: 1px solid #e8edf4;
+  border-radius: 13px;
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+
+.tf-project-card h3 {
+  overflow-wrap: anywhere;
+  margin: 20px 0 5px;
+  color: #172033;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.tf-project-description {
+  margin: 0;
+  color: #94a3b8;
+  font-size: 11px;
+}
+
+.tf-project-progress-label {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 23px;
+  color: #64748b;
+  font-size: 10px;
+}
+
+.tf-project-progress-label strong {
+  color: #334155;
+  font-size: 11px;
+}
+
+.tf-progress-track {
+  overflow: hidden;
+  height: 6px;
+  margin-top: 9px;
+  background: #f1f5f9;
+  border-radius: 99px;
+}
+
+.tf-progress-fill {
+  height: 100%;
+  border-radius: inherit;
+  transition: width 0.3s;
+}
+
+.tf-project-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 19px;
+  padding-top: 15px;
+  border-top: 1px solid #f1f5f9;
+}
+
+.tf-avatar-stack {
+  display: flex;
+  align-items: center;
+  padding-left: 2px;
+}
+
+.tf-mini-avatar {
+  display: grid;
+  place-items: center;
+  width: 27px;
+  height: 27px;
+  margin-left: -3px;
+  color: #1d4ed8;
+  background: #dbeafe;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  font-size: 8px;
+  font-weight: 750;
+}
+
+.tf-mini-avatar-1 {
+  color: #6d28d9;
+  background: #ede9fe;
+}
+
+.tf-mini-avatar-2 {
+  color: #047857;
+  background: #d1fae5;
+}
+
+.tf-status-badge,
+.tf-priority-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px 8px;
+  border-radius: 6px;
+  white-space: nowrap;
+  font-size: 10px;
+  font-weight: 650;
+}
+
+.tf-status-badge.ongoing {
+  color: #1d4ed8;
+  background: #eff6ff;
+}
+
+.tf-status-badge.completed {
+  color: #047857;
+  background: #ecfdf5;
+}
+
+.tf-status-badge.todo {
+  color: #64748b;
+  background: #f1f5f9;
+}
+
+.tf-priority-badge.high {
+  color: #b91c1c;
+  background: #fef2f2;
+}
+
+.tf-priority-badge.medium {
+  color: #b45309;
+  background: #fffbeb;
+}
+
+.tf-priority-badge.low {
+  color: #64748b;
+  background: #f1f5f9;
+}
+
+.tf-tasks-section {
+  padding: 21px;
+  background: #fff;
+  border: 1px solid #e8edf4;
+  border-radius: 13px;
+}
+
+.tf-tasks-section .tf-section-heading {
+  margin-bottom: 20px;
+}
+
+.tf-table-wrapper {
+  overflow-x: auto;
+  width: 100%;
+}
+
+.tf-tasks-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.tf-tasks-table th {
+  padding: 13px 12px;
+  color: #94a3b8;
+  background: #f8fafc;
+  font-size: 10px;
+  font-weight: 700;
+  border-top: 1px solid #f1f5f9;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.tf-tasks-table th:first-child {
+  border-radius: 7px 0 0 7px;
+}
+
+.tf-tasks-table th:last-child {
+  border-radius: 0 7px 7px 0;
+}
+
+.tf-tasks-table td {
+  padding: 16px 12px;
+  color: #475569;
+  border-bottom: 1px solid #f1f5f9;
+  font-size: 11px;
+}
+
+.tf-tasks-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.tf-task-name {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: #334155;
+  font-weight: 600;
+}
+
+.tf-task-check {
+  display: grid;
+  place-items: center;
+  width: 17px;
+  height: 17px;
+  flex-shrink: 0;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 5px;
+}
+
+.tf-task-check.checked {
+  color: #059669;
+  border: 0;
+}
+
+.tf-table-project {
+  color: #64748b;
+}
+
+.tf-date-cell {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #64748b;
+}
+
+@media (max-width: 1200px) {
+  .tf-stats-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .tf-project-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 650px) {
+  .tf-dashboard {
+    gap: 23px;
+  }
+
+  .tf-dashboard-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .tf-primary-button {
+    width: 100%;
+  }
+
+  .tf-stats-grid,
+  .tf-project-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .tf-stat-card {
+    padding: 16px;
+  }
+
+  .tf-stat-value {
+    margin-top: 13px;
+  }
+
+  .tf-tasks-section {
+    padding: 14px;
+  }
+}
