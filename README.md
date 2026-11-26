@@ -1,59 +1,169 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# TeamFlow — Plateforme de gestion collaborative de projets
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+TeamFlow est une application web de gestion collaborative permettant aux équipes d'organiser leurs projets, suivre les tâches et gérer les membres selon leurs rôles et permissions.
 
-## About Laravel
+## Fonctionnalités principales
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- Authentification des utilisateurs.
+- Gestion des projets : création, modification et suppression selon les permissions.
+- Gestion des tâches et suivi de leur avancement.
+- Gestion des membres et des équipes.
+- Notifications.
+- Tableau de bord avec indicateurs de suivi.
+- Gestion des rôles et des autorisations.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Technologies utilisées
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+**Frontend**
+- React 19
+- Vite 8
+- JavaScript
+- Tailwind CSS 4
+- Lucide React
 
-## Learning Laravel
+**Backend**
+- PHP 8.2
+- Laravel 12
+- Laravel Sanctum 4
+- API REST
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+**Base de données**
+- MySQL
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Rôles utilisateurs
 
-## Laravel Sponsors
+| Rôle | Description |
+|---|---|
+| Admin | Administration et gestion globale de la plateforme |
+| Chef de projet | Gestion des projets et suivi des activités selon ses permissions |
+| Membre | Participation aux projets et gestion des tâches autorisées |
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## Prérequis
 
-### Premium Partners
+Avant l'installation, assurez-vous de disposer de :
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+- PHP 8.2 ou supérieur
+- Composer
+- MySQL
+- Node.js compatible avec Vite 8
+- npm
+- Git
 
-## Contributing
+## Installation du projet
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### 1. Cloner le dépôt
 
-## Code of Conduct
+```bash
+git clone https://github.com/FATIMA19ARSMOUK/gestion-projets.git
+cd gestion-projets
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### 2. Installer le Backend Laravel
 
-## Security Vulnerabilities
+```bash
+composer install
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Créer le fichier `.env` :
 
-## License
+```bash
+copy .env.example .env
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Générer la clé de l'application :
+
+```bash
+php artisan key:generate
+```
+
+### 3. Configurer la base de données
+
+Créer une base de données MySQL, par exemple :
+
+`gestion_projets`
+
+Modifier les paramètres suivants dans le fichier `.env` :
+
+```env
+APP_URL=http://127.0.0.1:8000
+
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=gestion_projets
+DB_USERNAME=root
+DB_PASSWORD=
+```
+
+Adapter le nom d'utilisateur et le mot de passe selon votre configuration MySQL.
+
+### 4. Exécuter les migrations
+
+```bash
+php artisan migrate
+```
+
+### 5. Créer les comptes de démonstration
+
+```bash
+php artisan db:seed --class=DemoAccountsSeeder
+```
+
+Cette commande crée trois comptes de démonstration correspondant aux rôles Admin, Chef de projet et Membre.
+
+### 6. Installer le Frontend React
+
+Ouvrir un deuxième terminal :
+
+```bash
+cd frontend
+npm install
+```
+
+## Lancement de l'application
+
+### Terminal 1 — Backend Laravel
+
+Depuis le dossier principal :
+
+```bash
+php artisan serve --host=127.0.0.1 --port=8000
+```
+
+### Terminal 2 — Frontend React
+
+Depuis le dossier `frontend` :
+
+```bash
+npm run dev
+```
+
+Ouvrir ensuite l'adresse affichée par Vite dans le navigateur, généralement :
+
+`http://localhost:5173`
+
+## Comptes de démonstration
+
+Les comptes suivants sont destinés aux tests en environnement local.
+
+| Rôle | Email | Mot de passe |
+|---|---|---|
+| Admin | demo.admin@teamflow.test | DemoAdmin2026! |
+| Chef de projet | demo.manager@teamflow.test | DemoManager2026! |
+| Membre | demo.member@teamflow.test | DemoMember2026! |
+
+**Important :** ces identifiants sont réservés à la démonstration locale. Ils ne doivent pas être utilisés sur une installation publique ou en production.
+
+## Tests
+
+Pour exécuter les tests Laravel :
+
+```bash
+php artisan test
+```
+
+## Auteur
+
+Projet réalisé dans le cadre d'un parcours de développement digital Full Stack.
+
+**Stack : React — Laravel — MySQL**

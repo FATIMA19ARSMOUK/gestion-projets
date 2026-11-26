@@ -1,12 +1,22 @@
 
+/* =========================================================
+   TEAMFLOW MAIN LAYOUT — PREMIUM PURPLE / INDIGO
+   ========================================================= */
+
 .tf-app {
-  --tf-primary: #2563eb;
-  --tf-primary-dark: #1d4ed8;
-  --tf-primary-light: #eff6ff;
-  --tf-text: #172033;
-  --tf-muted: #64748b;
-  --tf-border: #e8edf4;
-  --tf-bg: #f7f9fc;
+  --tf-primary: #7654c8;
+  --tf-primary-dark: #6040ae;
+  --tf-primary-light: #f0ebfc;
+  --tf-purple: #8170b8;
+
+  --tf-sidebar: #211b3a;
+  --tf-sidebar-soft: #2c2549;
+  --tf-sidebar-active: #51418a;
+
+  --tf-text: #25243b;
+  --tf-muted: #85849a;
+  --tf-border: #eeedf4;
+  --tf-bg: #f7f6fb;
 
   display: flex;
   min-height: 100vh;
@@ -19,36 +29,58 @@
   box-sizing: border-box;
 }
 
+/* =========================================================
+   SIDEBAR
+   ========================================================= */
+
 .tf-sidebar {
-  width: 258px;
-  flex-shrink: 0;
   position: fixed;
   inset: 0 auto 0 0;
   z-index: 30;
+
   display: flex;
   flex-direction: column;
-  padding: 24px 16px 16px;
-  background: #fff;
-  border-right: 1px solid var(--tf-border);
+
+  width: 258px;
+  padding: 21px 15px 15px;
+
+  background:
+    radial-gradient(
+      circle at 10% 0%,
+      rgba(129, 112, 184, 0.16),
+      transparent 35%
+    ),
+    linear-gradient(180deg, #211b3a 0%, #251f40 100%);
+
+  border-right: 1px solid rgba(255, 255, 255, 0.055);
+  box-shadow: 8px 0 30px rgba(27, 21, 48, 0.08);
 }
+
+/* =========================================================
+   BRAND
+   ========================================================= */
 
 .tf-brand {
   display: flex;
   align-items: center;
   gap: 11px;
-  padding: 0 7px 27px;
+  padding: 0 7px 24px;
 }
 
 .tf-brand-icon {
   display: grid;
   place-items: center;
-  width: 43px;
-  height: 43px;
+
+  width: 42px;
+  height: 42px;
   flex-shrink: 0;
+
   color: #fff;
-  background: var(--tf-primary);
+  background: linear-gradient(145deg, #9a7be2, #6949b5);
+  border: 1px solid rgba(255, 255, 255, 0.16);
   border-radius: 13px;
-  box-shadow: 0 5px 12px #2563eb2b;
+
+  box-shadow: 0 7px 18px rgba(129, 96, 205, 0.3);
 }
 
 .tf-brand-text,
@@ -60,94 +92,91 @@
 }
 
 .tf-brand-text span {
-  font-size: 20px;
-  font-weight: 750;
+  color: #fff;
+  font-size: 19px;
+  font-weight: 800;
   letter-spacing: -0.7px;
 }
 
 .tf-brand-text small {
   margin-top: 3px;
-  font-size: 11px;
-  color: var(--tf-muted);
+  color: #a69cbe;
+  font-size: 10px;
 }
+
+/* =========================================================
+   MOBILE SIDEBAR CONTROLS
+   ========================================================= */
 
 .tf-close-sidebar,
 .tf-menu-button {
   display: none;
 }
 
+/* =========================================================
+   WORKSPACE
+   ========================================================= */
+
 .tf-workspace {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 12px 10px;
-  margin-bottom: 29px;
-  background: #f8fafc;
-  border: 1px solid var(--tf-border);
-  border-radius: 11px;
+
+  padding: 11px 10px;
+  margin-bottom: 27px;
+
+  background: rgba(255, 255, 255, 0.065);
+  border: 1px solid rgba(255, 255, 255, 0.085);
+  border-radius: 12px;
 }
 
 .tf-workspace-avatar {
   display: grid;
   place-items: center;
-  width: 36px;
-  height: 36px;
+
+  width: 35px;
+  height: 35px;
   flex-shrink: 0;
-  border-radius: 9px;
-  background: #dbeafe;
-  color: #1d4ed8;
-  font-weight: 750;
+
+  color: #e8ddff;
+  background: rgba(145, 119, 211, 0.24);
+  border: 1px solid rgba(190, 169, 239, 0.15);
+  border-radius: 10px;
+
+  font-size: 12px;
+  font-weight: 800;
 }
 
 .tf-workspace-info {
   flex: 1;
-  gap: 4px;
+  gap: 3px;
 }
 
 .tf-workspace-info strong,
 .tf-user-info strong {
-  font-size: 12px;
-  font-weight: 650;
+  color: #f2effa;
+  font-size: 11px;
+  font-weight: 700;
 }
 
 .tf-workspace-info small,
 .tf-user-info small {
-  font-size: 11px;
-  color: var(--tf-muted);
+  color: #a69cbe;
+  font-size: 10px;
 }
 
-.tf-workspace > svg,
-.tf-user-card {
-  position: relative;
-}
-
-.tf-user-card .tf-language-menu {
-  position: absolute;
-  left: 0;
-  bottom: calc(100% + 8px);
-  top: auto;
-  z-index: 1000;
-  min-width: 180px;
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
-  border-radius: 10px;
-  padding: 6px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
-}
-
-.tf-user-card .tf-language-menu button {
-  width: 100%;
-  text-align: left;
-  cursor: pointer;
-}
+/* =========================================================
+   NAVIGATION
+   ========================================================= */
 
 .tf-nav-label {
   padding: 0 10px;
-  margin-bottom: 12px;
-  color: #94a3b8;
-  font-size: 10px;
-  font-weight: 750;
-  letter-spacing: 1.2px;
+  margin-bottom: 9px;
+
+  color: #82799d;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 1.3px;
 }
 
 .tf-navigation {
@@ -158,52 +187,97 @@
 
 .tf-nav-link {
   position: relative;
+
   display: flex;
   align-items: center;
-  gap: 12px;
-  min-height: 45px;
+  gap: 11px;
+
+  min-height: 44px;
   padding: 0 12px;
-  color: #64748b;
+
+  color: #b3abc9;
   text-decoration: none;
-  font-size: 13px;
-  font-weight: 550;
-  border-radius: 9px;
-  transition: background 0.2s, color 0.2s;
+
+  font-size: 12px;
+  font-weight: 600;
+
+  border: 1px solid transparent;
+  border-radius: 10px;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.tf-nav-link svg {
+  flex-shrink: 0;
+  color: #a69abd;
+  transition: color 0.2s ease;
 }
 
 .tf-nav-link:hover {
-  color: var(--tf-primary);
-  background: #f8fafc;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.075);
+}
+
+.tf-nav-link:hover svg {
+  color: #d5c5ff;
 }
 
 .tf-nav-link.active {
-  color: var(--tf-primary);
-  background: var(--tf-primary-light);
-  font-weight: 650;
+  color: #fff;
+  background: linear-gradient(
+    100deg,
+    rgba(129, 104, 194, 0.36),
+    rgba(100, 76, 158, 0.24)
+  );
+  border-color: rgba(184, 160, 239, 0.15);
+  font-weight: 750;
+  box-shadow: inset 3px 0 0 #a88be8;
+}
+
+.tf-nav-link.active svg {
+  color: #d7c6ff;
+}
+
+.tf-nav-link.active::before {
+  display: none;
 }
 
 .tf-notification-dot {
   width: 7px;
   height: 7px;
   margin-left: auto;
-  background: #ef4444;
+
+  background: #f18a9a;
+  border: 2px solid #302747;
   border-radius: 50%;
 }
+
+/* =========================================================
+   SIDEBAR BOTTOM
+   ========================================================= */
 
 .tf-sidebar-bottom {
   margin-top: auto;
 }
 
 .tf-sidebar-bottom > .tf-nav-link {
-  margin-bottom: 16px;
+  margin-bottom: 13px;
 }
 
 .tf-user-card {
+  position: relative;
+
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 14px 4px 2px;
-  border-top: 1px solid var(--tf-border);
+  gap: 9px;
+
+  padding: 13px 3px 2px;
+
+  border-top: 1px solid rgba(255, 255, 255, 0.11);
 }
 
 .tf-user-avatar,
@@ -211,114 +285,214 @@
   display: grid;
   place-items: center;
   flex-shrink: 0;
-  color: #1d4ed8;
-  background: #dbeafe;
-  font-weight: 750;
+
+  color: #fff;
+  background: linear-gradient(145deg, #9b80dc, #6f55b5);
   border-radius: 50%;
+
+  font-weight: 800;
 }
 
 .tf-user-avatar {
-  width: 37px;
-  height: 37px;
-  font-size: 12px;
+  width: 36px;
+  height: 36px;
+  border: 2px solid rgba(255, 255, 255, 0.16);
+  font-size: 11px;
 }
 
 .tf-user-info {
   flex: 1;
-  gap: 4px;
+  gap: 3px;
 }
+
+/* =========================================================
+   PROFILE MENU
+   ========================================================= */
+
+.tf-user-card .tf-language-menu {
+  position: absolute;
+  left: 0;
+  bottom: calc(100% + 8px);
+  top: auto;
+  z-index: 1000;
+
+  min-width: 170px;
+  padding: 5px;
+
+  background: #fff;
+  border: 1px solid var(--tf-border);
+  border-radius: 11px;
+
+  box-shadow: 0 14px 30px rgba(29, 22, 55, 0.18);
+}
+
+.tf-user-card .tf-language-menu button {
+  width: 100%;
+  padding: 9px;
+
+  color: var(--tf-text);
+  text-align: left;
+
+  background: transparent;
+  border: 0;
+  border-radius: 7px;
+
+  cursor: pointer;
+  font: inherit;
+  font-size: 11px;
+}
+
+.tf-user-card .tf-language-menu button:hover {
+  color: var(--tf-primary);
+  background: var(--tf-primary-light);
+}
+
+/* =========================================================
+   MAIN
+   ========================================================= */
 
 .tf-main {
   display: flex;
   flex: 1;
   flex-direction: column;
+
   min-width: 0;
   margin-left: 258px;
+  background: var(--tf-bg);
 }
+
+/* =========================================================
+   TOPBAR
+   ========================================================= */
 
 .tf-topbar {
   position: sticky;
   top: 0;
   z-index: 20;
+
   display: flex;
   align-items: center;
   justify-content: space-between;
-  min-height: 76px;
-  padding: 0 34px;
-  background: #ffffffed;
-  border-bottom: 1px solid var(--tf-border);
-  backdrop-filter: blur(12px);
+
+  min-height: 72px;
+  padding: 0 32px;
+
+  background: rgba(255, 255, 255, 0.88);
+  border-bottom: 1px solid rgba(226, 220, 239, 0.8);
+
+  backdrop-filter: blur(16px);
 }
+
+/* =========================================================
+   SEARCH
+   ========================================================= */
 
 .tf-search {
   display: flex;
   align-items: center;
-  gap: 10px;
-  width: min(350px, 45%);
-  height: 41px;
-  padding: 0 12px;
-  color: #94a3b8;
-  background: #f8fafc;
-  border: 1px solid var(--tf-border);
-  border-radius: 9px;
+  gap: 9px;
+
+  width: min(360px, 45%);
+  height: 40px;
+
+  padding: 0 11px;
+
+  color: #9389aa;
+  background: #f8f6fc;
+
+  border: 1px solid #eeeaf5;
+  border-radius: 10px;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
 }
 
 .tf-search:focus-within {
-  border-color: #93c5fd;
-  box-shadow: 0 0 0 3px #dbeafe80;
+  background: #fff;
+  border-color: #b7a5e3;
+  box-shadow: 0 0 0 3px rgba(129, 112, 184, 0.12);
 }
 
 .tf-search input {
   width: 100%;
   min-width: 0;
+
   color: var(--tf-text);
   background: transparent;
   border: 0;
   outline: none;
+
   font: inherit;
-  font-size: 12px;
+  font-size: 11px;
 }
 
 .tf-search input::placeholder {
-  color: #94a3b8;
+  color: #a59db5;
 }
 
 .tf-search kbd {
   padding: 3px 5px;
+
   white-space: nowrap;
-  color: #94a3b8;
+
+  color: #9c93ae;
   background: #fff;
-  border: 1px solid var(--tf-border);
+
+  border: 1px solid #ebe6f3;
   border-radius: 5px;
-  font-size: 10px;
+
+  font-size: 9px;
 }
+
+/* =========================================================
+   TOPBAR ACTIONS
+   ========================================================= */
 
 .tf-topbar-actions {
   display: flex;
   align-items: center;
-  gap: 13px;
+  gap: 9px;
 }
 
 .tf-icon-button {
   position: relative;
+
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 7px;
-  width: 39px;
-  height: 39px;
-  color: #64748b;
+  gap: 6px;
+
+  width: 38px;
+  height: 38px;
+
+  color: #766d8b;
   background: #fff;
-  border: 1px solid var(--tf-border);
+
+  border: 1px solid #eeeaf5;
   border-radius: 10px;
+
   cursor: pointer;
   text-decoration: none;
+
+  transition:
+    color 0.2s ease,
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
 }
 
 .tf-icon-button:hover {
   color: var(--tf-primary);
-  background: #f8fafc;
+  background: #f7f3ff;
+  border-color: #ded4f1;
+  transform: translateY(-1px);
 }
+
+/* =========================================================
+   LANGUAGE
+   ========================================================= */
 
 .tf-language {
   position: relative;
@@ -326,9 +500,10 @@
 
 .tf-language-button {
   width: auto;
-  padding: 0 10px;
-  font-size: 11px;
-  font-weight: 650;
+  padding: 0 9px;
+
+  font-size: 10px;
+  font-weight: 700;
 }
 
 .tf-language-menu {
@@ -336,59 +511,92 @@
   top: calc(100% + 8px);
   right: 0;
   z-index: 50;
+
   display: flex;
   flex-direction: column;
-  width: 155px;
+
+  width: 150px;
   padding: 5px;
+
   background: #fff;
-  border: 1px solid var(--tf-border);
-  border-radius: 10px;
-  box-shadow: 0 12px 30px #0f172a14;
+  border: 1px solid #eeeaf5;
+  border-radius: 11px;
+
+  box-shadow: 0 14px 30px rgba(29, 22, 55, 0.13);
 }
 
 .tf-language-menu button {
-  padding: 10px;
+  padding: 9px;
+
   color: var(--tf-text);
   text-align: left;
+
   background: transparent;
   border: 0;
-  border-radius: 6px;
+  border-radius: 7px;
+
   cursor: pointer;
+
   font: inherit;
-  font-size: 12px;
+  font-size: 11px;
 }
 
 .tf-language-menu button:hover {
+  color: var(--tf-primary);
   background: var(--tf-primary-light);
 }
 
+/* =========================================================
+   NOTIFICATION
+   ========================================================= */
+
 .tf-bell-button span {
   position: absolute;
-  top: 8px;
-  right: 8px;
+  top: 7px;
+  right: 7px;
+
   width: 7px;
   height: 7px;
-  background: #ef4444;
-  border: 1px solid white;
+
+  background: #ef7187;
+  border: 2px solid #fff;
   border-radius: 50%;
 }
+
+/* =========================================================
+   TOP AVATAR
+   ========================================================= */
 
 .tf-topbar-avatar {
   width: 36px;
   height: 36px;
-  font-size: 11px;
+  border: 2px solid #eee8fa;
+  font-size: 10px;
 }
+
+/* =========================================================
+   CONTENT
+   ========================================================= */
 
 .tf-content {
   width: 100%;
   max-width: 1600px;
+
   margin: 0 auto;
-  padding: 34px;
+  padding: 32px;
 }
+
+/* =========================================================
+   MOBILE OVERLAY
+   ========================================================= */
 
 .tf-sidebar-overlay {
   display: none;
 }
+
+/* =========================================================
+   TABLET / MOBILE
+   ========================================================= */
 
 @media (max-width: 900px) {
   .tf-sidebar {
@@ -404,18 +612,23 @@
     position: fixed;
     inset: 0;
     z-index: 25;
+
     display: block;
-    background: #0f172a66;
+
+    background: rgba(24, 18, 43, 0.55);
     border: 0;
+    backdrop-filter: blur(2px);
   }
 
   .tf-close-sidebar,
   .tf-menu-button {
     display: inline-grid;
     place-items: center;
-    color: #475569;
+
+    color: #6c6281;
     background: transparent;
     border: 0;
+
     cursor: pointer;
   }
 
@@ -426,6 +639,13 @@
   .tf-menu-button {
     width: 38px;
     height: 38px;
+    flex-shrink: 0;
+    border-radius: 10px;
+  }
+
+  .tf-menu-button:hover {
+    color: var(--tf-primary);
+    background: #f0ebfc;
   }
 
   .tf-main {
@@ -433,7 +653,7 @@
   }
 
   .tf-topbar {
-    gap: 14px;
+    gap: 13px;
     padding: 0 20px;
   }
 
@@ -447,16 +667,21 @@
   }
 }
 
+/* =========================================================
+   SMALL MOBILE
+   ========================================================= */
+
 @media (max-width: 520px) {
   .tf-topbar {
-    gap: 9px;
-    min-height: 66px;
+    gap: 8px;
+    min-height: 64px;
     padding: 0 12px;
   }
 
   .tf-search {
-    gap: 7px;
-    padding: 0 9px;
+    gap: 6px;
+    height: 38px;
+    padding: 0 8px;
   }
 
   .tf-search kbd {
@@ -464,17 +689,17 @@
   }
 
   .tf-topbar-actions {
-    gap: 7px;
+    gap: 6px;
   }
 
   .tf-language-button {
-    gap: 4px;
-    width: 39px;
+    gap: 3px;
+    width: 38px;
     padding: 0;
   }
 
   .tf-language-button span {
-    font-size: 10px;
+    font-size: 9px;
   }
 
   .tf-topbar-avatar {
@@ -485,4 +710,128 @@
   .tf-content {
     padding: 20px 14px;
   }
+}
+
+/* =========================================================
+   TEAMFLOW — DARK MODE
+   Keeps the original purple sidebar and Light Mode unchanged
+   ========================================================= */
+
+.tf-app[data-theme="dark"] {
+  --tf-text: #eeeaf7;
+  --tf-muted: #aaa3bb;
+  --tf-border: #39334c;
+  --tf-bg: #171522;
+
+  color-scheme: dark;
+}
+
+/* Main background */
+.tf-app[data-theme="dark"] .tf-main {
+  background: var(--tf-bg);
+}
+
+/* Topbar */
+.tf-app[data-theme="dark"] .tf-topbar {
+  background: rgba(29, 26, 42, 0.92);
+  border-bottom-color: #39334c;
+}
+
+/* Search */
+.tf-app[data-theme="dark"] .tf-search {
+  color: #aaa1bf;
+  background: #252136;
+  border-color: #3b354e;
+}
+
+.tf-app[data-theme="dark"] .tf-search:focus-within {
+  background: #2b263d;
+  border-color: #8065c5;
+  box-shadow: 0 0 0 3px rgba(129, 112, 184, 0.16);
+}
+
+.tf-app[data-theme="dark"] .tf-search input {
+  color: #eeeaf7;
+}
+
+.tf-app[data-theme="dark"] .tf-search input::placeholder {
+  color: #958ba9;
+}
+
+.tf-app[data-theme="dark"] .tf-search kbd {
+  color: #aaa1bf;
+  background: #302a42;
+  border-color: #49415d;
+}
+
+/* Topbar buttons */
+.tf-app[data-theme="dark"] .tf-icon-button {
+  color: #c1b8d5;
+  background: #252136;
+  border-color: #3b354e;
+}
+
+.tf-app[data-theme="dark"] .tf-icon-button:hover {
+  color: #c7b4ff;
+  background: #332a4b;
+  border-color: #65518e;
+}
+
+/* Language and profile menus */
+.tf-app[data-theme="dark"] .tf-language-menu,
+.tf-app[data-theme="dark"] .tf-user-card .tf-language-menu {
+  background: #252136;
+  border-color: #403950;
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.3);
+}
+
+.tf-app[data-theme="dark"] .tf-language-menu button,
+.tf-app[data-theme="dark"] .tf-user-card .tf-language-menu button {
+  color: #e9e3f5;
+}
+
+.tf-app[data-theme="dark"] .tf-language-menu button:hover,
+.tf-app[data-theme="dark"] .tf-user-card .tf-language-menu button:hover {
+  color: #c7b4ff;
+  background: #39304f;
+}
+
+/* Notification badge */
+.tf-app[data-theme="dark"] .tf-bell-button span {
+  border-color: #252136;
+}
+
+/* Mobile menu button */
+.tf-app[data-theme="dark"] .tf-menu-button {
+  color: #c1b8d5;
+}
+
+.tf-app[data-theme="dark"] .tf-menu-button:hover {
+  color: #c7b4ff;
+  background: #332a4b;
+}
+
+/* Content */
+.tf-app[data-theme="dark"] .tf-content {
+  color: var(--tf-text);
+}
+
+/* Native form controls */
+.tf-app[data-theme="dark"] input,
+.tf-app[data-theme="dark"] select,
+.tf-app[data-theme="dark"] textarea {
+  color-scheme: dark;
+}
+
+/* Smooth theme transition */
+.tf-app,
+.tf-app .tf-main,
+.tf-app .tf-topbar,
+.tf-app .tf-search,
+.tf-app .tf-icon-button,
+.tf-app .tf-language-menu {
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease;
 }

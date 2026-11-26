@@ -5,31 +5,48 @@ import {
   UserRound,
   Globe,
   Bell,
-  ShieldCheck,
-  Camera,
-  Save,
+  Sun,
+  Moon,
   Mail,
-  LockKeyhole,
   Check,
+  Monitor,
 } from "lucide-react";
 import "./Settings.css";
 
+const defaultNotifications = {
+  email: true,
+  tasks: true,
+  comments: true,
+};
+
+function getNotificationPreferences() {
+  try {
+    const saved = localStorage.getItem("notificationPreferences");
+
+    return saved
+      ? { ...defaultNotifications, ...JSON.parse(saved) }
+      : defaultNotifications;
+  } catch {
+    return defaultNotifications;
+  }
+}
+
 export default function Settings() {
-  const { language } = useOutletContext() || {};
+  const {
+    language,
+    setLanguage,
+    theme,
+    setTheme,
+    user,
+  } = useOutletContext() || {};
+
   const isFr = language !== "en";
 
   const [activeSection, setActiveSection] = useState("profile");
-  const [name, setName] = useState("Fatima");
-  const [email, setEmail] = useState("fatima@example.com");
-  const [jobTitle, setJobTitle] = useState("Développeuse Full Stack");
-  const [appLanguage, setAppLanguage] = useState(isFr ? "fr" : "en");
-  const [emailNotifications, setEmailNotifications] = useState(true);
-  const [taskNotifications, setTaskNotifications] = useState(true);
-  const [commentNotifications, setCommentNotifications] = useState(true);
-  const [currentPassword, setCurrentPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [saved, setSaved] = useState(false);
+
+  const [notifications, setNotifications] = useState(
+    getNotificationPreferences
+  );
 
   const sections = [
     {
@@ -41,42 +58,44 @@ export default function Settings() {
     {
       id: "preferences",
       label: isFr ? "Préférences" : "Preferences",
-      description: isFr ? "Langue et affichage" : "Language and display",
+      description: isFr ? "Langue de l'application" : "Application language",
       icon: Globe,
     },
     {
       id: "notifications",
-      label: isFr ? "Notifications" : "Notifications",
-      description: isFr ? "Gérer les alertes" : "Manage alerts",
+      label: "Notifications",
+      description: isFr ? "Gérer les préférences" : "Manage preferences",
       icon: Bell,
     },
     {
-      id: "security",
-      label: isFr ? "Sécurité" : "Security",
-      description: isFr ? "Mot de passe et accès" : "Password and access",
-      icon: ShieldCheck,
+      id: "appearance",
+      label: isFr ? "Apparence" : "Appearance",
+      description: isFr ? "Thème de l'application" : "Application theme",
+      icon: Sun,
     },
   ];
 
-  const handleSave = (event) => {
-    event.preventDefault();
+  const initials = (user?.name || "U")
+    .trim()
+    .split(/\s+/)
+    .slice(0, 2)
+    .map((part) => part[0])
+    .join("")
+    .toUpperCase();
 
-    if (
-      activeSection === "security" &&
-      newPassword &&
-      newPassword !== confirmPassword
-    ) {
-      window.alert(
-        isFr
-          ? "Les mots de passe ne correspondent pas."
-          : "Passwords do not match."
-      );
-      return;
-    }
+  function updateNotification(key, value) {
+    const updated = {
+      ...notifications,
+      [key]: value,
+    };
 
-    setSaved(true);
-    window.setTimeout(() => setSaved(false), 2500);
-  };
+    setNotifications(updated);
+
+    localStorage.setItem(
+      "notificationPreferences",
+      JSON.stringify(updated)
+    );
+  }
 
   return (
     <main className="settings-page">
@@ -85,11 +104,13 @@ export default function Settings() {
           <span className="settings-eyebrow">
             {isFr ? "ESPACE PERSONNEL" : "PERSONAL SPACE"}
           </span>
+
           <h1>{isFr ? "Paramètres" : "Settings"}</h1>
+
           <p>
             {isFr
-              ? "Gérez votre profil et personnalisez votre expérience TeamFlow."
-              : "Manage your profile and personalize your TeamFlow experience."}
+              ? "Gérez vos préférences et personnalisez votre espace TeamFlow."
+              : "Manage your preferences and personalize your TeamFlow workspace."}
           </p>
         </div>
       </header>
@@ -110,14 +131,12 @@ export default function Settings() {
                 className={`settings-nav-item ${
                   activeSection === section.id ? "active" : ""
                 }`}
-                onClick={() => {
-                  setActiveSection(section.id);
-                  setSaved(false);
-                }}
+                onClick={() => setActiveSection(section.id)}
               >
                 <span className="settings-nav-icon">
                   <Icon size={19} />
                 </span>
+
                 <span className="settings-nav-text">
                   <strong>{section.label}</strong>
                   <small>{section.description}</small>
@@ -128,277 +147,321 @@ export default function Settings() {
         </aside>
 
         <section className="settings-content">
-          <form onSubmit={handleSave}>
-            {activeSection === "profile" && (
-              <>
-                <div className="settings-section-heading">
-                  <div className="settings-heading-icon">
-                    <UserRound size={21} />
-                  </div>
-                  <div>
-                    <h2>{isFr ? "Informations du profil" : "Profile information"}</h2>
-                    <p>
-                      {isFr
-                        ? "Ces informations représentent votre identité sur TeamFlow."
-                        : "This information represents your identity on TeamFlow."}
-                    </p>
-                  </div>
+
+          {/* PROFILE */}
+          {activeSection === "profile" && (
+            <>
+              <div className="settings-section-heading">
+                <div className="settings-heading-icon">
+                  <UserRound size={21} />
                 </div>
 
-                <div className="settings-avatar-block">
-                  <div className="settings-avatar">F</div>
-                  <div>
-                    <strong>{name || (isFr ? "Votre nom" : "Your name")}</strong>
-                    <p>
-                      {isFr
-                        ? "Votre profil est visible par les membres de vos projets."
-                        : "Your profile is visible to your project members."}
-                    </p>
-                    <button
-                      type="button"
-                      className="settings-secondary-button"
-                      onClick={() =>
-                        window.alert(
-                          isFr
-                            ? "L'ajout d'une photo sera disponible plus tard."
-                            : "Photo upload will be available later."
-                        )
-                      }
-                    >
-                      <Camera size={15} />
-                      {isFr ? "Modifier la photo" : "Change photo"}
-                    </button>
-                  </div>
-                </div>
+                <div>
+                  <h2>
+                    {isFr ? "Informations du profil" : "Profile information"}
+                  </h2>
 
-                <div className="settings-form-grid">
-                  <label className="settings-field">
-                    <span>{isFr ? "Nom complet" : "Full name"}</span>
-                    <input
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                      placeholder={isFr ? "Votre nom" : "Your name"}
-                      required
-                    />
-                  </label>
-
-                  <label className="settings-field">
-                    <span>{isFr ? "Adresse e-mail" : "Email address"}</span>
-                    <div className="settings-input-icon">
-                      <Mail size={17} />
-                      <input
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        placeholder="vous@exemple.com"
-                        required
-                      />
-                    </div>
-                  </label>
-
-                  <label className="settings-field settings-field-full">
-                    <span>{isFr ? "Poste / Fonction" : "Job title"}</span>
-                    <input
-                      value={jobTitle}
-                      onChange={(e) => setJobTitle(e.target.value)}
-                      placeholder={isFr ? "Votre fonction" : "Your job title"}
-                    />
-                  </label>
-                </div>
-              </>
-            )}
-
-            {activeSection === "preferences" && (
-              <>
-                <div className="settings-section-heading">
-                  <div className="settings-heading-icon">
-                    <Globe size={21} />
-                  </div>
-                  <div>
-                    <h2>{isFr ? "Préférences générales" : "General preferences"}</h2>
-                    <p>
-                      {isFr
-                        ? "Personnalisez la langue de votre espace."
-                        : "Customize your workspace language."}
-                    </p>
-                  </div>
-                </div>
-
-                <label className="settings-field settings-field-full">
-                  <span>{isFr ? "Langue de l'interface" : "Interface language"}</span>
-                  <select
-                    value={appLanguage}
-                    onChange={(e) => setAppLanguage(e.target.value)}
-                  >
-                    <option value="fr">Français</option>
-                    <option value="en">English</option>
-                  </select>
-                  <small className="settings-help">
+                  <p>
                     {isFr
-                      ? "Ce choix sera enregistré dans l'interface de démonstration."
-                      : "This choice will be saved in the demo interface."}
-                  </small>
+                      ? "Les informations de votre compte TeamFlow."
+                      : "Your TeamFlow account information."}
+                  </p>
+                </div>
+              </div>
+
+              <div className="settings-avatar-block">
+                <div className="settings-avatar">
+                  {initials}
+                </div>
+
+                <div>
+                  <strong>{user?.name || (isFr ? "Utilisateur" : "User")}</strong>
+
+                  <p>
+                    {isFr
+                      ? "Votre profil est associé à votre compte TeamFlow."
+                      : "Your profile is linked to your TeamFlow account."}
+                  </p>
+                </div>
+              </div>
+
+              <div className="settings-form-grid">
+                <label className="settings-field">
+                  <span>{isFr ? "Nom complet" : "Full name"}</span>
+
+                  <input
+                    type="text"
+                    value={user?.name || ""}
+                    readOnly
+                  />
                 </label>
 
-                <div className="settings-info-box">
-                  <Globe size={19} />
+                <label className="settings-field">
+                  <span>{isFr ? "Adresse e-mail" : "Email address"}</span>
+
+                  <div className="settings-input-icon">
+                    <Mail size={17} />
+
+                    <input
+                      type="email"
+                      value={user?.email || ""}
+                      readOnly
+                    />
+                  </div>
+                </label>
+
+                <label className="settings-field settings-field-full">
+                  <span>{isFr ? "Rôle" : "Role"}</span>
+
+                  <input
+                    type="text"
+                    value={user?.role?.name || (isFr ? "Non défini" : "Not defined")}
+                    readOnly
+                  />
+                </label>
+              </div>
+            </>
+          )}
+
+          {/* PREFERENCES */}
+          {activeSection === "preferences" && (
+            <>
+              <div className="settings-section-heading">
+                <div className="settings-heading-icon">
+                  <Globe size={21} />
+                </div>
+
+                <div>
+                  <h2>
+                    {isFr ? "Préférences générales" : "General preferences"}
+                  </h2>
+
                   <p>
                     {isFr
-                      ? "D'autres préférences d'affichage pourront être ajoutées plus tard."
-                      : "More display preferences can be added later."}
+                      ? "Choisissez la langue de votre espace de travail."
+                      : "Choose your workspace language."}
                   </p>
                 </div>
-              </>
-            )}
+              </div>
 
-            {activeSection === "notifications" && (
-              <>
-                <div className="settings-section-heading">
-                  <div className="settings-heading-icon">
-                    <Bell size={21} />
-                  </div>
-                  <div>
-                    <h2>{isFr ? "Préférences de notification" : "Notification preferences"}</h2>
-                    <p>
-                      {isFr
-                        ? "Choisissez les alertes que vous souhaitez recevoir."
-                        : "Choose which alerts you want to receive."}
-                    </p>
-                  </div>
+              <label className="settings-field settings-field-full">
+                <span>
+                  {isFr ? "Langue de l'interface" : "Interface language"}
+                </span>
+
+                <select
+                  value={language || "fr"}
+                  onChange={(e) => setLanguage?.(e.target.value)}
+                >
+                  <option value="fr">🇫🇷 Français</option>
+                  <option value="en">🇬🇧 English</option>
+                </select>
+
+                <small className="settings-help">
+                  {isFr
+                    ? "La langue sera appliquée à l'ensemble de l'interface."
+                    : "The language will be applied throughout the interface."}
+                </small>
+              </label>
+
+              <div className="settings-info-box">
+                <Globe size={19} />
+
+                <p>
+                  {isFr
+                    ? "Votre choix est sauvegardé automatiquement."
+                    : "Your choice is saved automatically."}
+                </p>
+              </div>
+            </>
+          )}
+
+          {/* NOTIFICATIONS */}
+          {activeSection === "notifications" && (
+            <>
+              <div className="settings-section-heading">
+                <div className="settings-heading-icon">
+                  <Bell size={21} />
                 </div>
 
-                <div className="settings-options-list">
-                  <label className="settings-option">
-                    <span>
-                      <strong>{isFr ? "Notifications par e-mail" : "Email notifications"}</strong>
-                      <small>
-                        {isFr
-                          ? "Recevoir les mises à jour par e-mail."
-                          : "Receive updates by email."}
-                      </small>
-                    </span>
-                    <input
-                      type="checkbox"
-                      checked={emailNotifications}
-                      onChange={(e) => setEmailNotifications(e.target.checked)}
-                    />
-                  </label>
+                <div>
+                  <h2>
+                    {isFr
+                      ? "Préférences de notification"
+                      : "Notification preferences"}
+                  </h2>
 
-                  <label className="settings-option">
-                    <span>
-                      <strong>{isFr ? "Mises à jour des tâches" : "Task updates"}</strong>
-                      <small>
-                        {isFr
-                          ? "Quand une tâche vous est assignée ou modifiée."
-                          : "When a task is assigned to you or updated."}
-                      </small>
-                    </span>
-                    <input
-                      type="checkbox"
-                      checked={taskNotifications}
-                      onChange={(e) => setTaskNotifications(e.target.checked)}
-                    />
-                  </label>
-
-                  <label className="settings-option">
-                    <span>
-                      <strong>{isFr ? "Nouveaux commentaires" : "New comments"}</strong>
-                      <small>
-                        {isFr
-                          ? "Quand quelqu'un commente une tâche."
-                          : "When someone comments on a task."}
-                      </small>
-                    </span>
-                    <input
-                      type="checkbox"
-                      checked={commentNotifications}
-                      onChange={(e) => setCommentNotifications(e.target.checked)}
-                    />
-                  </label>
-                </div>
-              </>
-            )}
-
-            {activeSection === "security" && (
-              <>
-                <div className="settings-section-heading">
-                  <div className="settings-heading-icon">
-                    <ShieldCheck size={21} />
-                  </div>
-                  <div>
-                    <h2>{isFr ? "Sécurité du compte" : "Account security"}</h2>
-                    <p>
-                      {isFr
-                        ? "Modifiez votre mot de passe pour sécuriser votre compte."
-                        : "Change your password to keep your account secure."}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="settings-form-grid">
-                  <label className="settings-field settings-field-full">
-                    <span>{isFr ? "Mot de passe actuel" : "Current password"}</span>
-                    <div className="settings-input-icon">
-                      <LockKeyhole size={17} />
-                      <input
-                        type="password"
-                        value={currentPassword}
-                        onChange={(e) => setCurrentPassword(e.target.value)}
-                        placeholder="••••••••"
-                      />
-                    </div>
-                  </label>
-
-                  <label className="settings-field">
-                    <span>{isFr ? "Nouveau mot de passe" : "New password"}</span>
-                    <input
-                      type="password"
-                      value={newPassword}
-                      onChange={(e) => setNewPassword(e.target.value)}
-                      placeholder="••••••••"
-                      minLength={8}
-                    />
-                  </label>
-
-                  <label className="settings-field">
-                    <span>{isFr ? "Confirmer le mot de passe" : "Confirm password"}</span>
-                    <input
-                      type="password"
-                      value={confirmPassword}
-                      onChange={(e) => setConfirmPassword(e.target.value)}
-                      placeholder="••••••••"
-                      minLength={8}
-                    />
-                  </label>
-                </div>
-
-                <div className="settings-info-box">
-                  <ShieldCheck size={19} />
                   <p>
                     {isFr
-                      ? "Le changement réel du mot de passe sera connecté à l'API Laravel plus tard."
-                      : "Actual password changes will be connected to the Laravel API later."}
+                      ? "Personnalisez vos préférences de notification."
+                      : "Customize your notification preferences."}
                   </p>
                 </div>
-              </>
-            )}
+              </div>
 
-            <div className="settings-footer">
-              <span className={`settings-saved-message ${saved ? "visible" : ""}`}>
-                {saved && (
-                  <>
-                    <Check size={16} />
-                    {isFr ? "Modifications enregistrées (démo)" : "Changes saved (demo)"}
-                  </>
-                )}
-              </span>
+              <div className="settings-options-list">
+                <label className="settings-option">
+                  <span>
+                    <strong>
+                      {isFr ? "Notifications par e-mail" : "Email notifications"}
+                    </strong>
 
-              <button type="submit" className="settings-save-button">
-                <Save size={17} />
-                {isFr ? "Enregistrer les modifications" : "Save changes"}
-              </button>
-            </div>
-          </form>
+                    <small>
+                      {isFr
+                        ? "Préférence pour les notifications par e-mail."
+                        : "Preference for email notifications."}
+                    </small>
+                  </span>
+
+                  <input
+                    type="checkbox"
+                    checked={notifications.email}
+                    onChange={(e) =>
+                      updateNotification("email", e.target.checked)
+                    }
+                  />
+                </label>
+
+                <label className="settings-option">
+                  <span>
+                    <strong>
+                      {isFr ? "Mises à jour des tâches" : "Task updates"}
+                    </strong>
+
+                    <small>
+                      {isFr
+                        ? "Préférence pour les alertes liées aux tâches."
+                        : "Preference for task-related alerts."}
+                    </small>
+                  </span>
+
+                  <input
+                    type="checkbox"
+                    checked={notifications.tasks}
+                    onChange={(e) =>
+                      updateNotification("tasks", e.target.checked)
+                    }
+                  />
+                </label>
+
+                <label className="settings-option">
+                  <span>
+                    <strong>
+                      {isFr ? "Nouveaux commentaires" : "New comments"}
+                    </strong>
+
+                    <small>
+                      {isFr
+                        ? "Préférence pour les alertes de commentaires."
+                        : "Preference for comment alerts."}
+                    </small>
+                  </span>
+
+                  <input
+                    type="checkbox"
+                    checked={notifications.comments}
+                    onChange={(e) =>
+                      updateNotification("comments", e.target.checked)
+                    }
+                  />
+                </label>
+              </div>
+
+              <div className="settings-info-box">
+                <Bell size={19} />
+
+                <p>
+                  {isFr
+                    ? "Ces préférences sont enregistrées sur cet appareil. Elles ne désactivent pas encore les notifications générées par le serveur."
+                    : "These preferences are saved on this device. They do not yet disable notifications generated by the server."}
+                </p>
+              </div>
+            </>
+          )}
+
+          {/* APPEARANCE */}
+          {activeSection === "appearance" && (
+            <>
+              <div className="settings-section-heading">
+                <div className="settings-heading-icon">
+                  <Sun size={21} />
+                </div>
+
+                <div>
+                  <h2>{isFr ? "Apparence" : "Appearance"}</h2>
+
+                  <p>
+                    {isFr
+                      ? "Choisissez le thème visuel de TeamFlow."
+                      : "Choose the visual theme of TeamFlow."}
+                  </p>
+                </div>
+              </div>
+
+              <div className="settings-options-list">
+                <button
+                  type="button"
+                  className={`settings-option settings-theme-option ${
+                    theme === "light" ? "selected" : ""
+                  }`}
+                  onClick={() => setTheme?.("light")}
+                >
+                  <span className="settings-theme-icon">
+                    <Sun size={21} />
+                  </span>
+
+                  <span>
+                    <strong>{isFr ? "Mode clair" : "Light mode"}</strong>
+                    <small>
+                      {isFr
+                        ? "Une interface claire et lumineuse."
+                        : "A bright and clean interface."}
+                    </small>
+                  </span>
+
+                  {theme === "light" && (
+                    <Check size={19} className="settings-theme-check" />
+                  )}
+                </button>
+
+                <button
+                  type="button"
+                  className={`settings-option settings-theme-option ${
+                    theme === "dark" ? "selected" : ""
+                  }`}
+                  onClick={() => setTheme?.("dark")}
+                >
+                  <span className="settings-theme-icon">
+                    <Moon size={21} />
+                  </span>
+
+                  <span>
+                    <strong>{isFr ? "Mode sombre" : "Dark mode"}</strong>
+                    <small>
+                      {isFr
+                        ? "Une interface sombre pour plus de confort."
+                        : "A dark interface for more visual comfort."}
+                    </small>
+                  </span>
+
+                  {theme === "dark" && (
+                    <Check size={19} className="settings-theme-check" />
+                  )}
+                </button>
+              </div>
+
+              <div className="settings-info-box">
+                <Monitor size={19} />
+
+                <p>
+                  {isFr
+                    ? "Votre thème est sauvegardé automatiquement."
+                    : "Your theme is saved automatically."}
+                </p>
+              </div>
+            </>
+          )}
+
         </section>
       </div>
     </main>

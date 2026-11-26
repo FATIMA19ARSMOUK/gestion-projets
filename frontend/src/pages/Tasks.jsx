@@ -2,7 +2,6 @@
 import { useEffect, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import {
-  CheckSquare,
   Search,
   Plus,
   CalendarDays,
@@ -13,6 +12,15 @@ import {
   MessageSquare,
   X,
   Send,
+  ArrowUpRight,
+  ListTodo,
+  LayoutDashboard,
+  Target,
+  Filter,
+  ChevronDown,
+  FolderKanban,
+  Sparkles,
+  AlertCircle,
 } from "lucide-react";
 import { apiRequest } from "../services/api";
 import "./Tasks.css";
@@ -41,12 +49,11 @@ const getInitials = (name = "") =>
 const formatDate = (date) => {
   if (!date) return "—";
 
-  const datePart = String(date).slice(0, 10);
-  const parsedDate = new Date(`${datePart}T00:00:00`);
+  const parsed = new Date(`${String(date).slice(0, 10)}T00:00:00`);
 
-  if (Number.isNaN(parsedDate.getTime())) return "—";
+  if (Number.isNaN(parsed.getTime())) return "—";
 
-  return parsedDate.toLocaleDateString("fr-FR", {
+  return parsed.toLocaleDateString("fr-FR", {
     day: "2-digit",
     month: "short",
     year: "numeric",
@@ -100,7 +107,6 @@ export default function Tasks() {
 
   const [selectedTask, setSelectedTask] = useState(null);
   const [commentText, setCommentText] = useState("");
-
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [form, setForm] = useState(initialForm);
 
@@ -114,7 +120,7 @@ export default function Tasks() {
   const [formError, setFormError] = useState("");
   const [commentError, setCommentError] = useState("");
 
-  // Charger les tâches et les projets depuis Laravel
+  // LOAD TASKS AND PROJECTS
   const loadData = async () => {
     setLoading(true);
     setError("");
@@ -132,10 +138,13 @@ export default function Tasks() {
       );
 
       setProjects(
-        Array.isArray(projectsData) ? projectsData : []
+        Array.isArray(projectsData)
+          ? projectsData
+          : []
       );
     } catch (err) {
       console.error("Erreur chargement tâches :", err);
+
       setError(
         err.message ||
           (isFr
@@ -151,7 +160,7 @@ export default function Tasks() {
     loadData();
   }, []);
 
-  // Charger les commentaires de la tâche sélectionnée
+  // LOAD COMMENTS
   useEffect(() => {
     if (!selectedTask) {
       setComments([]);
@@ -171,7 +180,9 @@ export default function Tasks() {
 
         if (active) {
           setComments(
-            Array.isArray(data) ? data.map(formatComment) : []
+            Array.isArray(data)
+              ? data.map(formatComment)
+              : []
           );
         }
       } catch (err) {
@@ -197,7 +208,19 @@ export default function Tasks() {
     };
   }, [selectedTask?.id]);
 
-  // Recherche et filtres
+  // REAL STATISTICS
+  const counts = {
+    total: tasks.length,
+    todo: tasks.filter((task) => task.status === "À faire").length,
+    progress: tasks.filter((task) => task.status === "En cours").length,
+    done: tasks.filter((task) => task.status === "Terminé").length,
+  };
+
+  const completionRate = counts.total
+    ? Math.round((counts.done / counts.total) * 100)
+    : 0;
+
+  // FILTER TASKS
   const normalizedSearch = search.toLowerCase().trim();
 
   const filteredTasks = tasks.filter((task) => {
@@ -222,25 +245,21 @@ export default function Tasks() {
       priorityFilter === "Toutes" ||
       task.priority === priorityFilter;
 
-    return matchesSearch && matchesStatus && matchesPriority;
+    return (
+      matchesSearch &&
+      matchesStatus &&
+      matchesPriority
+    );
   });
 
-  // Statistiques
-  const counts = {
-    total: tasks.length,
-    todo: tasks.filter((task) => task.status === "À faire").length,
-    progress: tasks.filter((task) => task.status === "En cours").length,
-    done: tasks.filter((task) => task.status === "Terminé").length,
-  };
-
-  // Membres du projet sélectionné
   const selectedProject = projects.find(
-    (project) => String(project.id) === String(form.project_id)
+    (project) =>
+      String(project.id) === String(form.project_id)
   );
 
   const projectMembers = selectedProject?.members || [];
 
-  // Créer une tâche
+  // CREATE TASK
   const handleCreateTask = async (event) => {
     event.preventDefault();
     setFormError("");
@@ -287,6 +306,7 @@ export default function Tasks() {
       setShowCreateModal(false);
     } catch (err) {
       console.error("Erreur création tâche :", err);
+
       setFormError(
         err.message ||
           (isFr
@@ -298,10 +318,15 @@ export default function Tasks() {
     }
   };
 
-  // Modifier le statut d'une tâche
+  // UPDATE TASK STATUS
   const updateStatus = async (id, status) => {
-    const previousTask = tasks.find((task) => task.id === id);
-    if (!previousTask || previousTask.status === status) return;
+    const previousTask = tasks.find(
+      (task) => task.id === id
+    );
+
+    if (!previousTask || previousTask.status === status) {
+      return;
+    }
 
     setUpdatingTaskId(id);
     setError("");
@@ -327,6 +352,7 @@ export default function Tasks() {
       );
     } catch (err) {
       console.error("Erreur modification statut :", err);
+
       setError(
         err.message ||
           (isFr
@@ -338,7 +364,7 @@ export default function Tasks() {
     }
   };
 
-  // Ajouter un commentaire
+  // ADD COMMENT
   const addComment = async (event) => {
     event.preventDefault();
 
@@ -368,6 +394,7 @@ export default function Tasks() {
       setCommentText("");
     } catch (err) {
       console.error("Erreur ajout commentaire :", err);
+
       setCommentError(
         err.message ||
           (isFr
@@ -381,19 +408,24 @@ export default function Tasks() {
 
   return (
     <main className="tasks-page">
+      {/* PAGE INTRO */}
       <header className="tasks-header">
-        <div>
+        <div className="tasks-header-copy">
           <div className="tasks-eyebrow">
-            <CheckSquare size={15} />
-            {isFr ? "GESTION DU TRAVAIL" : "WORK MANAGEMENT"}
+            <Sparkles size={14} />
+            {isFr
+              ? "WORKSPACE / PRODUCTIVITÉ"
+              : "WORKSPACE / PRODUCTIVITY"}
           </div>
 
-          <h1>{isFr ? "Tâches" : "Tasks"}</h1>
+          <h1>
+            {isFr ? "Gestion des tâches" : "Task management"}
+          </h1>
 
           <p>
             {isFr
-              ? "Organisez votre travail et suivez chaque étape."
-              : "Organize your work and track every step."}
+              ? "Gardez le contrôle de votre travail, une tâche à la fois."
+              : "Stay in control of your work, one task at a time."}
           </p>
         </div>
 
@@ -407,7 +439,7 @@ export default function Tasks() {
           }}
         >
           <Plus size={18} />
-          {isFr ? "Nouvelle tâche" : "New task"}
+          {isFr ? "Créer une tâche" : "Create task"}
         </button>
       </header>
 
@@ -415,133 +447,406 @@ export default function Tasks() {
         <p className="tasks-error-message">{error}</p>
       )}
 
-      <section className="tasks-summary">
-        <article className="tasks-summary-card">
-          <span className="tasks-summary-icon tasks-icon-blue">
-            <CheckSquare size={19} />
-          </span>
-          <div>
-            <p>{isFr ? "Toutes les tâches" : "All tasks"}</p>
-            <strong>{counts.total}</strong>
+      {/* WORKSPACE OVERVIEW */}
+      <section className="tasks-overview">
+        <div className="tasks-overview-main">
+          <div className="tasks-overview-heading">
+            <div>
+              <span className="tasks-section-kicker">
+                <LayoutDashboard size={14} />
+                {isFr ? "VUE D'ENSEMBLE" : "WORKSPACE OVERVIEW"}
+              </span>
+
+              <h2>
+                {isFr ? "Votre progression" : "Your progress"}
+              </h2>
+
+              <p>
+                {isFr
+                  ? "Un aperçu de l'avancement de votre travail."
+                  : "A snapshot of your team's work progress."}
+              </p>
+            </div>
+
+            <span className="tasks-live-indicator">
+              <span />
+              {isFr ? "Données réelles" : "Live data"}
+            </span>
           </div>
-        </article>
 
-        <article className="tasks-summary-card">
-          <span className="tasks-summary-icon tasks-icon-orange">
-            <Circle size={19} />
-          </span>
-          <div>
-            <p>{isFr ? "À faire" : "To do"}</p>
-            <strong>{counts.todo}</strong>
-          </div>
-        </article>
+          <div className="tasks-overview-content">
+            <div
+              className="tasks-progress-ring"
+              style={{ "--progress": `${completionRate}%` }}
+            >
+              <div className="tasks-progress-ring-inner">
+                <strong>{completionRate}%</strong>
+                <span>
+                  {isFr ? "Terminées" : "Completed"}
+                </span>
+              </div>
+            </div>
 
-        <article className="tasks-summary-card">
-          <span className="tasks-summary-icon tasks-icon-purple">
-            <Clock3 size={19} />
-          </span>
-          <div>
-            <p>{isFr ? "En cours" : "In progress"}</p>
-            <strong>{counts.progress}</strong>
-          </div>
-        </article>
+            <div className="tasks-progress-copy">
+              <span className="tasks-progress-label">
+                {isFr
+                  ? "Taux de complétion"
+                  : "Completion rate"}
+              </span>
 
-        <article className="tasks-summary-card">
-          <span className="tasks-summary-icon tasks-icon-green">
-            <CheckCircle2 size={19} />
-          </span>
-          <div>
-            <p>{isFr ? "Terminées" : "Completed"}</p>
-            <strong>{counts.done}</strong>
-          </div>
-        </article>
-      </section>
+              <strong>
+                {counts.done} <small>/ {counts.total}</small>
+              </strong>
 
-      <section className="tasks-toolbar">
-        <label className="tasks-search">
-          <Search size={18} />
+              <p>
+                {isFr
+                  ? "Tâches terminées sur l'ensemble des tâches."
+                  : "Tasks completed out of all assigned tasks."}
+              </p>
 
-          <input
-            type="text"
-            value={search}
-            onChange={(event) => setSearch(event.target.value)}
-            placeholder={
-              isFr ? "Rechercher une tâche..." : "Search tasks..."
-            }
-          />
-        </label>
-
-        <select
-          className="tasks-select"
-          value={statusFilter}
-          onChange={(event) => setStatusFilter(event.target.value)}
-          aria-label={isFr ? "Filtrer par statut" : "Filter by status"}
-        >
-          <option value="Tous">
-            {isFr ? "Tous les statuts" : "All statuses"}
-          </option>
-          <option value="À faire">{isFr ? "À faire" : "To do"}</option>
-          <option value="En cours">
-            {isFr ? "En cours" : "In progress"}
-          </option>
-          <option value="Terminé">
-            {isFr ? "Terminé" : "Completed"}
-          </option>
-        </select>
-
-        <select
-          className="tasks-select"
-          value={priorityFilter}
-          onChange={(event) => setPriorityFilter(event.target.value)}
-          aria-label={isFr ? "Filtrer par priorité" : "Filter by priority"}
-        >
-          <option value="Toutes">
-            {isFr ? "Toutes les priorités" : "All priorities"}
-          </option>
-          <option value="Haute">
-            {isFr ? "Haute priorité" : "High priority"}
-          </option>
-          <option value="Moyenne">
-            {isFr ? "Priorité moyenne" : "Medium priority"}
-          </option>
-          <option value="Basse">
-            {isFr ? "Basse priorité" : "Low priority"}
-          </option>
-          <option value="Urgente">
-            {isFr ? "Urgente" : "Urgent"}
-          </option>
-        </select>
-      </section>
-
-      <section className="tasks-table-container">
-        <div className="tasks-table-heading">
-          <div>
-            <h2>{isFr ? "Liste des tâches" : "Task list"}</h2>
-            <p>
-              {filteredTasks.length}{" "}
-              {isFr ? "tâche(s) affichée(s)" : "task(s) displayed"}
-            </p>
+              <div className="tasks-progress-track">
+                <span style={{ width: `${completionRate}%` }} />
+              </div>
+            </div>
           </div>
         </div>
 
+        <div className="tasks-overview-breakdown">
+          <div className="tasks-breakdown-heading">
+            <div>
+              <span className="tasks-section-kicker">
+                <Target size={14} />
+                {isFr ? "RÉPARTITION" : "BREAKDOWN"}
+              </span>
+
+              <h3>
+                {isFr ? "État des tâches" : "Task status"}
+              </h3>
+            </div>
+
+            <span className="tasks-breakdown-total">
+              {counts.total}
+            </span>
+          </div>
+
+          <div className="tasks-breakdown-list">
+            <div className="tasks-breakdown-row">
+              <span className="tasks-breakdown-icon todo">
+                <Circle size={15} />
+              </span>
+
+              <div className="tasks-breakdown-info">
+                <div>
+                  <strong>{isFr ? "À faire" : "To do"}</strong>
+                  <span>{counts.todo}</span>
+                </div>
+
+                <div className="tasks-breakdown-track">
+                  <span
+                    className="todo-fill"
+                    style={{
+                      width: `${
+                        counts.total
+                          ? (counts.todo / counts.total) * 100
+                          : 0
+                      }%`,
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="tasks-breakdown-row">
+              <span className="tasks-breakdown-icon progress">
+                <Clock3 size={15} />
+              </span>
+
+              <div className="tasks-breakdown-info">
+                <div>
+                  <strong>
+                    {isFr ? "En cours" : "In progress"}
+                  </strong>
+                  <span>{counts.progress}</span>
+                </div>
+
+                <div className="tasks-breakdown-track">
+                  <span
+                    className="progress-fill"
+                    style={{
+                      width: `${
+                        counts.total
+                          ? (counts.progress / counts.total) * 100
+                          : 0
+                      }%`,
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="tasks-breakdown-row">
+              <span className="tasks-breakdown-icon done">
+                <CheckCircle2 size={15} />
+              </span>
+
+              <div className="tasks-breakdown-info">
+                <div>
+                  <strong>
+                    {isFr ? "Terminées" : "Completed"}
+                  </strong>
+                  <span>{counts.done}</span>
+                </div>
+
+                <div className="tasks-breakdown-track">
+                  <span
+                    className="done-fill"
+                    style={{
+                      width: `${
+                        counts.total
+                          ? (counts.done / counts.total) * 100
+                          : 0
+                      }%`,
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* METRICS */}
+      <section className="tasks-metrics">
+        <article className="tasks-metric-card metric-total">
+          <div className="tasks-metric-top">
+            <span>
+              {isFr ? "Total des tâches" : "Total tasks"}
+            </span>
+            <span className="tasks-metric-icon">
+              <ListTodo size={17} />
+            </span>
+          </div>
+
+          <strong>
+            {counts.total.toString().padStart(2, "0")}
+          </strong>
+
+          <small>
+            {isFr ? "Dans votre espace" : "In your workspace"}
+          </small>
+        </article>
+
+        <article className="tasks-metric-card metric-todo">
+          <div className="tasks-metric-top">
+            <span>{isFr ? "À démarrer" : "To start"}</span>
+            <span className="tasks-metric-icon">
+              <Circle size={17} />
+            </span>
+          </div>
+
+          <strong>
+            {counts.todo.toString().padStart(2, "0")}
+          </strong>
+
+          <small>
+            {isFr ? "En attente" : "Waiting to start"}
+          </small>
+        </article>
+
+        <article className="tasks-metric-card metric-progress">
+          <div className="tasks-metric-top">
+            <span>{isFr ? "En cours" : "In progress"}</span>
+            <span className="tasks-metric-icon">
+              <Clock3 size={17} />
+            </span>
+          </div>
+
+          <strong>
+            {counts.progress.toString().padStart(2, "0")}
+          </strong>
+
+          <small>
+            {isFr ? "Actuellement actives" : "Currently active"}
+          </small>
+        </article>
+
+        <article className="tasks-metric-card metric-done">
+          <div className="tasks-metric-top">
+            <span>{isFr ? "Terminées" : "Completed"}</span>
+            <span className="tasks-metric-icon">
+              <CheckCircle2 size={17} />
+            </span>
+          </div>
+
+          <strong>
+            {counts.done.toString().padStart(2, "0")}
+          </strong>
+
+          <small>
+            {isFr ? "Travail accompli" : "Work completed"}
+          </small>
+        </article>
+      </section>
+
+      {/* TASK MANAGEMENT */}
+      <section className="tasks-workspace">
+        <div className="tasks-workspace-header">
+          <div>
+            <span className="tasks-section-kicker">
+              <FolderKanban size={14} />
+              {isFr ? "ESPACE DE TRAVAIL" : "WORKSPACE"}
+            </span>
+
+            <h2>
+              {isFr ? "Toutes les tâches" : "All tasks"}
+            </h2>
+
+            <p>
+              {isFr
+                ? "Consultez, recherchez et gérez vos tâches."
+                : "Browse, search and manage your tasks."}
+            </p>
+          </div>
+
+          <span className="tasks-results-count">
+            {filteredTasks.length}{" "}
+            {isFr ? "résultat(s)" : "results"}
+          </span>
+        </div>
+
+        {/* SEARCH AND FILTERS */}
+        <div className="tasks-controls">
+          <div className="tasks-toolbar">
+            <label className="tasks-search">
+              <Search size={17} />
+
+              <input
+                type="text"
+                value={search}
+                onChange={(event) =>
+                  setSearch(event.target.value)
+                }
+                placeholder={
+                  isFr
+                    ? "Rechercher une tâche..."
+                    : "Search tasks..."
+                }
+              />
+
+              {search && (
+                <button
+                  type="button"
+                  onClick={() => setSearch("")}
+                  aria-label="Clear search"
+                >
+                  <X size={14} />
+                </button>
+              )}
+            </label>
+
+            {/* STATUS FILTER */}
+            <label className="tasks-filter-select">
+              <Filter size={15} />
+
+              <select
+                value={statusFilter}
+                onChange={(event) =>
+                  setStatusFilter(event.target.value)
+                }
+                aria-label={
+                  isFr
+                    ? "Filtrer par statut"
+                    : "Filter by status"
+                }
+              >
+                <option value="Tous">
+                  {isFr ? "Tous les statuts" : "All statuses"}
+                </option>
+
+                <option value="À faire">
+                  {isFr ? "À faire" : "To do"}
+                </option>
+
+                <option value="En cours">
+                  {isFr ? "En cours" : "In progress"}
+                </option>
+
+                <option value="Terminé">
+                  {isFr ? "Terminé" : "Completed"}
+                </option>
+              </select>
+
+              <ChevronDown size={14} />
+            </label>
+
+            {/* PRIORITY FILTER */}
+            <label className="tasks-filter-select">
+              <Flag size={15} />
+
+              <select
+                value={priorityFilter}
+                onChange={(event) =>
+                  setPriorityFilter(event.target.value)
+                }
+                aria-label={
+                  isFr
+                    ? "Filtrer par priorité"
+                    : "Filter by priority"
+                }
+              >
+                <option value="Toutes">
+                  {isFr
+                    ? "Toutes les priorités"
+                    : "All priorities"}
+                </option>
+
+                <option value="Haute">
+                  {isFr ? "Haute priorité" : "High priority"}
+                </option>
+
+                <option value="Moyenne">
+                  {isFr
+                    ? "Priorité moyenne"
+                    : "Medium priority"}
+                </option>
+
+                <option value="Basse">
+                  {isFr ? "Basse priorité" : "Low priority"}
+                </option>
+
+                <option value="Urgente">
+                  {isFr ? "Urgente" : "Urgent"}
+                </option>
+              </select>
+
+              <ChevronDown size={14} />
+            </label>
+          </div>
+        </div>
+
+        {/* TASKS TABLE */}
         <div className="tasks-table-scroll">
           <table className="tasks-table">
             <thead>
               <tr>
                 <th>{isFr ? "Tâche" : "Task"}</th>
                 <th>{isFr ? "Projet" : "Project"}</th>
-                <th>{isFr ? "Assignée à" : "Assignee"}</th>
+                <th>{isFr ? "Responsable" : "Assignee"}</th>
                 <th>{isFr ? "Statut" : "Status"}</th>
                 <th>{isFr ? "Priorité" : "Priority"}</th>
                 <th>{isFr ? "Échéance" : "Due date"}</th>
+                <th></th>
               </tr>
             </thead>
 
             <tbody>
               {loading ? (
                 <tr>
-                  <td colSpan={6} className="tasks-empty">
-                    {isFr ? "Chargement des tâches..." : "Loading tasks..."}
+                  <td colSpan={7} className="tasks-empty">
+                    <span className="tasks-loading-indicator" />
+                    {isFr
+                      ? "Chargement des tâches..."
+                      : "Loading tasks..."}
                   </td>
                 </tr>
               ) : (
@@ -552,12 +857,12 @@ export default function Tasks() {
                         <div className="task-title-cell">
                           {task.status === "Terminé" ? (
                             <CheckCircle2
-                              size={17}
+                              size={18}
                               className="task-completed-icon"
                             />
                           ) : (
                             <Circle
-                              size={17}
+                              size={18}
                               className="task-circle-icon"
                             />
                           )}
@@ -565,7 +870,9 @@ export default function Tasks() {
                           <button
                             type="button"
                             className="task-title-button"
-                            onClick={() => setSelectedTask(task)}
+                            onClick={() =>
+                              setSelectedTask(task)
+                            }
                           >
                             {task.title}
                           </button>
@@ -574,32 +881,50 @@ export default function Tasks() {
 
                       <td>
                         <span className="task-project-name">
+                          <FolderKanban size={13} />
                           {task.project}
                         </span>
                       </td>
 
                       <td>
-                        <span className="task-assignee">
-                          {task.assignee}
+                        <span className="task-assignee-wrap">
+                          <span className="task-assignee">
+                            {task.assignee}
+                          </span>
+
+                          <span className="task-assignee-name">
+                            {task.assigneeName}
+                          </span>
                         </span>
                       </td>
 
                       <td>
                         <select
-                          className={`task-status-select ${statusClass[task.status] || ""}`}
+                          className={`task-status-select ${
+                            statusClass[task.status] || ""
+                          }`}
                           value={task.status}
-                          disabled={updatingTaskId === task.id}
-                          onChange={(event) =>
-                            updateStatus(task.id, event.target.value)
+                          disabled={
+                            updatingTaskId === task.id
                           }
-                          aria-label={`${isFr ? "Statut de" : "Status of"} ${task.title}`}
+                          onChange={(event) =>
+                            updateStatus(
+                              task.id,
+                              event.target.value
+                            )
+                          }
+                          aria-label={`${
+                            isFr ? "Statut de" : "Status of"
+                          } ${task.title}`}
                         >
                           <option value="À faire">
                             {isFr ? "À faire" : "To do"}
                           </option>
+
                           <option value="En cours">
                             {isFr ? "En cours" : "In progress"}
                           </option>
+
                           <option value="Terminé">
                             {isFr ? "Terminé" : "Completed"}
                           </option>
@@ -608,9 +933,12 @@ export default function Tasks() {
 
                       <td>
                         <span
-                          className={`task-priority ${priorityClass[task.priority] || ""}`}
+                          className={`task-priority ${
+                            priorityClass[task.priority] || ""
+                          }`}
                         >
-                          <Flag size={13} />
+                          <Flag size={12} />
+
                           {isFr
                             ? task.priority
                             : {
@@ -628,12 +956,30 @@ export default function Tasks() {
                           {task.dueDate}
                         </span>
                       </td>
+
+                      <td>
+                        <button
+                          type="button"
+                          className="task-open-button"
+                          onClick={() =>
+                            setSelectedTask(task)
+                          }
+                          aria-label={
+                            isFr
+                              ? "Voir les détails"
+                              : "View details"
+                          }
+                        >
+                          <ArrowUpRight size={17} />
+                        </button>
+                      </td>
                     </tr>
                   ))}
 
                   {filteredTasks.length === 0 && (
                     <tr>
-                      <td colSpan={6} className="tasks-empty">
+                      <td colSpan={7} className="tasks-empty">
+                        <AlertCircle size={20} />
                         {isFr
                           ? "Aucune tâche trouvée."
                           : "No tasks found."}
@@ -647,7 +993,7 @@ export default function Tasks() {
         </div>
       </section>
 
-      {/* Modal de création */}
+      {/* CREATE TASK MODAL */}
       {showCreateModal && (
         <div
           className="task-modal-overlay"
@@ -665,11 +1011,15 @@ export default function Tasks() {
             <header className="task-modal-header">
               <div>
                 <span className="task-modal-eyebrow">
-                  {isFr ? "GESTION DU TRAVAIL" : "WORK MANAGEMENT"}
+                  {isFr ? "NOUVELLE TÂCHE" : "NEW TASK"}
                 </span>
+
                 <h2>
-                  {isFr ? "Créer une nouvelle tâche" : "Create a new task"}
+                  {isFr
+                    ? "Créer une nouvelle tâche"
+                    : "Create a new task"}
                 </h2>
+
                 <p>
                   {isFr
                     ? "Remplissez les informations de la tâche."
@@ -681,7 +1031,6 @@ export default function Tasks() {
                 type="button"
                 className="task-modal-close"
                 onClick={() => setShowCreateModal(false)}
-                aria-label={isFr ? "Fermer" : "Close"}
               >
                 <X size={20} />
               </button>
@@ -693,6 +1042,7 @@ export default function Tasks() {
             >
               <label>
                 {isFr ? "Projet *" : "Project *"}
+
                 <select
                   required
                   value={form.project_id}
@@ -705,11 +1055,16 @@ export default function Tasks() {
                   }
                 >
                   <option value="">
-                    {isFr ? "Sélectionner un projet" : "Select a project"}
+                    {isFr
+                      ? "Sélectionner un projet"
+                      : "Select a project"}
                   </option>
 
                   {projects.map((project) => (
-                    <option key={project.id} value={project.id}>
+                    <option
+                      key={project.id}
+                      value={project.id}
+                    >
                       {project.name}
                     </option>
                   ))}
@@ -717,28 +1072,40 @@ export default function Tasks() {
               </label>
 
               <label>
-                {isFr ? "Titre de la tâche *" : "Task title *"}
+                {isFr
+                  ? "Titre de la tâche *"
+                  : "Task title *"}
+
                 <input
                   type="text"
                   required
                   maxLength={255}
                   value={form.title}
                   onChange={(event) =>
-                    setForm({ ...form, title: event.target.value })
+                    setForm({
+                      ...form,
+                      title: event.target.value,
+                    })
                   }
                   placeholder={
-                    isFr ? "Ex : Créer la page d'accueil" : "e.g. Create homepage"
+                    isFr
+                      ? "Ex : Créer la page d'accueil"
+                      : "e.g. Create homepage"
                   }
                 />
               </label>
 
               <label>
                 {isFr ? "Description" : "Description"}
+
                 <textarea
                   rows={3}
                   value={form.description}
                   onChange={(event) =>
-                    setForm({ ...form, description: event.target.value })
+                    setForm({
+                      ...form,
+                      description: event.target.value,
+                    })
                   }
                   placeholder={
                     isFr
@@ -750,10 +1117,14 @@ export default function Tasks() {
 
               <label>
                 {isFr ? "Assigner à" : "Assign to"}
+
                 <select
                   value={form.assigned_to}
                   onChange={(event) =>
-                    setForm({ ...form, assigned_to: event.target.value })
+                    setForm({
+                      ...form,
+                      assigned_to: event.target.value,
+                    })
                   }
                   disabled={!form.project_id}
                 >
@@ -762,34 +1133,46 @@ export default function Tasks() {
                   </option>
 
                   {projectMembers.map((member) => (
-                    <option key={member.id} value={member.id}>
+                    <option
+                      key={member.id}
+                      value={member.id}
+                    >
                       {member.name}
                     </option>
                   ))}
                 </select>
               </label>
 
-              {form.project_id && projectMembers.length === 0 && (
-                <p className="task-form-hint">
-                  {isFr
-                    ? "Ce projet ne contient aucun membre."
-                    : "This project has no members."}
-                </p>
-              )}
+              {form.project_id &&
+                projectMembers.length === 0 && (
+                  <p className="task-form-hint">
+                    {isFr
+                      ? "Ce projet ne contient aucun membre."
+                      : "This project has no members."}
+                  </p>
+                )}
 
               <div className="task-form-grid">
                 <label>
                   {isFr ? "Statut" : "Status"}
+
                   <select
                     value={form.status}
                     onChange={(event) =>
-                      setForm({ ...form, status: event.target.value })
+                      setForm({
+                        ...form,
+                        status: event.target.value,
+                      })
                     }
                   >
-                    <option value="À faire">{isFr ? "À faire" : "To do"}</option>
+                    <option value="À faire">
+                      {isFr ? "À faire" : "To do"}
+                    </option>
+
                     <option value="En cours">
                       {isFr ? "En cours" : "In progress"}
                     </option>
+
                     <option value="Terminé">
                       {isFr ? "Terminé" : "Completed"}
                     </option>
@@ -798,17 +1181,28 @@ export default function Tasks() {
 
                 <label>
                   {isFr ? "Priorité" : "Priority"}
+
                   <select
                     value={form.priority}
                     onChange={(event) =>
-                      setForm({ ...form, priority: event.target.value })
+                      setForm({
+                        ...form,
+                        priority: event.target.value,
+                      })
                     }
                   >
-                    <option value="Basse">{isFr ? "Basse" : "Low"}</option>
+                    <option value="Basse">
+                      {isFr ? "Basse" : "Low"}
+                    </option>
+
                     <option value="Moyenne">
                       {isFr ? "Moyenne" : "Medium"}
                     </option>
-                    <option value="Haute">{isFr ? "Haute" : "High"}</option>
+
+                    <option value="Haute">
+                      {isFr ? "Haute" : "High"}
+                    </option>
+
                     <option value="Urgente">
                       {isFr ? "Urgente" : "Urgent"}
                     </option>
@@ -818,17 +1212,23 @@ export default function Tasks() {
 
               <label>
                 {isFr ? "Date limite" : "Deadline"}
+
                 <input
                   type="date"
                   value={form.deadline}
                   onChange={(event) =>
-                    setForm({ ...form, deadline: event.target.value })
+                    setForm({
+                      ...form,
+                      deadline: event.target.value,
+                    })
                   }
                 />
               </label>
 
               {formError && (
-                <p className="tasks-error-message">{formError}</p>
+                <p className="tasks-error-message">
+                  {formError}
+                </p>
               )}
 
               <div className="task-create-actions">
@@ -846,6 +1246,7 @@ export default function Tasks() {
                   disabled={savingTask}
                 >
                   <Plus size={17} />
+
                   {savingTask
                     ? isFr
                       ? "Création..."
@@ -860,7 +1261,7 @@ export default function Tasks() {
         </div>
       )}
 
-      {/* Modal des détails et commentaires */}
+      {/* TASK DETAILS AND COMMENTS */}
       {selectedTask && (
         <div
           className="task-modal-overlay"
@@ -879,10 +1280,15 @@ export default function Tasks() {
             <header className="task-modal-header">
               <div>
                 <span className="task-modal-eyebrow">
-                  {isFr ? "DÉTAILS DE LA TÂCHE" : "TASK DETAILS"}
+                  {isFr
+                    ? "DÉTAILS DE LA TÂCHE"
+                    : "TASK DETAILS"}
                 </span>
 
-                <h2 id="task-modal-title">{selectedTask.title}</h2>
+                <h2 id="task-modal-title">
+                  {selectedTask.title}
+                </h2>
+
                 <p>{selectedTask.project}</p>
               </div>
 
@@ -890,7 +1296,6 @@ export default function Tasks() {
                 type="button"
                 className="task-modal-close"
                 onClick={() => setSelectedTask(null)}
-                aria-label={isFr ? "Fermer" : "Close"}
               >
                 <X size={20} />
               </button>
@@ -898,7 +1303,9 @@ export default function Tasks() {
 
             {selectedTask.description && (
               <div className="task-modal-description">
-                <strong>{isFr ? "Description" : "Description"}</strong>
+                <strong>
+                  {isFr ? "Description" : "Description"}
+                </strong>
                 <p>{selectedTask.description}</p>
               </div>
             )}
@@ -928,12 +1335,18 @@ export default function Tasks() {
             <div className="task-comments-section">
               <div className="task-comments-heading">
                 <MessageSquare size={18} />
-                <h3>{isFr ? "Commentaires" : "Comments"}</h3>
+
+                <h3>
+                  {isFr ? "Commentaires" : "Comments"}
+                </h3>
+
                 <span>{comments.length}</span>
               </div>
 
               {commentError && (
-                <p className="tasks-error-message">{commentError}</p>
+                <p className="tasks-error-message">
+                  {commentError}
+                </p>
               )}
 
               <div className="task-comments-list">
@@ -951,7 +1364,10 @@ export default function Tasks() {
                   </p>
                 ) : (
                   comments.map((comment) => (
-                    <article className="task-comment" key={comment.id}>
+                    <article
+                      className="task-comment"
+                      key={comment.id}
+                    >
                       <div className="task-comment-avatar">
                         {comment.initials}
                       </div>
@@ -978,7 +1394,9 @@ export default function Tasks() {
                 <div className="task-comment-input-wrap">
                   <textarea
                     value={commentText}
-                    onChange={(event) => setCommentText(event.target.value)}
+                    onChange={(event) =>
+                      setCommentText(event.target.value)
+                    }
                     placeholder={
                       isFr
                         ? "Écrire un commentaire..."
@@ -989,14 +1407,19 @@ export default function Tasks() {
                   />
 
                   <div className="task-comment-form-footer">
-                    <span>{commentText.length}/2000</span>
+                    <span>
+                      {commentText.length}/2000
+                    </span>
 
                     <button
                       type="submit"
-                      disabled={!commentText.trim() || sendingComment}
+                      disabled={
+                        !commentText.trim() || sendingComment
+                      }
                       className="task-comment-submit"
                     >
                       <Send size={15} />
+
                       {sendingComment
                         ? isFr
                           ? "Envoi..."

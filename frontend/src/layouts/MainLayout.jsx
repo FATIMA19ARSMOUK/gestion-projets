@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { apiRequest } from "../services/api";
 import {
@@ -50,11 +50,21 @@ const translations = {
 export default function MainLayout() {
   const navigate = useNavigate();
 
-  const [language, setLanguage] = useState("fr");
+  // Language
+  const [language, setLanguage] = useState(() => {
+    return localStorage.getItem("appLanguage") || "fr";
+  });
+
+  // Theme
+  const [theme, setTheme] = useState(() => {
+    return localStorage.getItem("appTheme") || "light";
+  });
+
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [languageOpen, setLanguageOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
 
+  // User
   const [user, setUser] = useState(() => {
     try {
       return JSON.parse(localStorage.getItem("user")) || null;
@@ -63,7 +73,47 @@ export default function MainLayout() {
     }
   });
 
-  const t = translations[language];
+  // Save language
+  useEffect(() => {
+    localStorage.setItem("appLanguage", language);
+  }, [language]);
+
+  // Save theme
+  useEffect(() => {
+    localStorage.setItem("appTheme", theme);
+  }, [theme]);
+
+  // Get authenticated user
+  useEffect(() => {
+    let active = true;
+
+    async function fetchUser() {
+      const token = localStorage.getItem("token");
+
+      if (!token) return;
+
+      try {
+        const data = await apiRequest("/user");
+
+        if (active && data) {
+          const currentUser = data.user || data;
+
+          setUser(currentUser);
+          localStorage.setItem("user", JSON.stringify(currentUser));
+        }
+      } catch (error) {
+        console.error("Impossible de récupérer le profil :", error);
+      }
+    }
+
+    fetchUser();
+
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  const t = translations[language] || translations.fr;
 
   const initials = (user?.name || "U")
     .trim()
@@ -74,7 +124,7 @@ export default function MainLayout() {
     .toUpperCase();
 
   const navigation = [
-    { label: t.dashboard, path: "/", icon: LayoutDashboard },
+    { label: t.dashboard, path: "/dashboard", icon: LayoutDashboard },
     { label: t.projects, path: "/projects", icon: FolderKanban },
     { label: t.tasks, path: "/tasks", icon: CheckSquare },
     { label: t.team, path: "/team", icon: Users },
@@ -97,7 +147,7 @@ export default function MainLayout() {
   }
 
   return (
-    <div className="tf-app">
+    <div className="tf-app" data-theme={theme}>
       {sidebarOpen && (
         <button
           className="tf-sidebar-overlay"
@@ -144,7 +194,7 @@ export default function MainLayout() {
             <NavLink
               key={path}
               to={path}
-              end={path === "/"}
+              end={path === "/dashboard"}
               className={({ isActive }) =>
                 `tf-nav-link ${isActive ? "active" : ""}`
               }
@@ -272,7 +322,16 @@ export default function MainLayout() {
         </header>
 
         <main className="tf-content">
-          <Outlet context={{ language }} />
+          <Outlet
+            context={{
+              language,
+              setLanguage,
+              theme,
+              setTheme,
+              user,
+              setUser,
+            }}
+          />
         </main>
       </div>
     </div>
