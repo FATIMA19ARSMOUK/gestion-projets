@@ -1,33 +1,33 @@
 # TeamFlow — Plateforme de gestion collaborative de projets
 
-TeamFlow est une application web de gestion collaborative permettant aux équipes d'organiser leurs projets, suivre les tâches et gérer les membres selon leurs rôles et permissions.
+TeamFlow est une application web de gestion collaborative conçue pour aider les équipes à organiser leurs projets, répartir les tâches, suivre leur avancement et gérer les membres selon leurs rôles et permissions.
 
 ## Fonctionnalités principales
 
-- Authentification des utilisateurs.
-- Gestion des projets : création, modification et suppression selon les permissions.
-- Gestion des tâches et suivi de leur avancement.
-- Gestion des membres et des équipes.
-- Notifications.
-- Tableau de bord avec indicateurs de suivi.
-- Gestion des rôles et des autorisations.
+- **Authentification :** connexion et gestion des accès utilisateurs.
+- **Gestion des projets :** création, modification et suppression selon les permissions.
+- **Gestion des tâches :** organisation des tâches et suivi de leur progression.
+- **Gestion des équipes :** ajout et gestion des membres des projets.
+- **Notifications :** suivi des activités et des notifications.
+- **Tableau de bord :** affichage des indicateurs et statistiques de suivi.
+- **Gestion des rôles :** contrôle des autorisations selon le profil utilisateur.
 
 ## Technologies utilisées
 
-**Frontend**
+### Frontend
 - React 19
 - Vite 8
 - JavaScript
 - Tailwind CSS 4
 - Lucide React
 
-**Backend**
+### Backend
 - PHP 8.2
 - Laravel 12
 - Laravel Sanctum 4
 - API REST
 
-**Base de données**
+### Base de données
 - MySQL
 
 ## Rôles utilisateurs
@@ -40,7 +40,7 @@ TeamFlow est une application web de gestion collaborative permettant aux équipe
 
 ## Prérequis
 
-Avant l'installation, assurez-vous de disposer de :
+Avant de commencer, assurez-vous d'avoir installé :
 
 - PHP 8.2 ou supérieur
 - Composer
@@ -51,20 +51,22 @@ Avant l'installation, assurez-vous de disposer de :
 
 ## Installation du projet
 
-### 1. Cloner le dépôt
+### 1. Cloner le dépôt GitHub
 
 ```bash
 git clone https://github.com/FATIMA19ARSMOUK/gestion-projets.git
 cd gestion-projets
 ```
 
-### 2. Installer le Backend Laravel
+### 2. Installer les dépendances Laravel
+
+À la racine du projet, exécuter :
 
 ```bash
 composer install
 ```
 
-Créer le fichier `.env` :
+Créer le fichier `.env` à partir du fichier d'exemple :
 
 ```bash
 copy .env.example .env
@@ -78,11 +80,13 @@ php artisan key:generate
 
 ### 3. Configurer la base de données
 
-Créer une base de données MySQL, par exemple :
+Démarrer MySQL (par exemple avec XAMPP), puis créer une base de données nommée :
 
-`gestion_projets`
+```text
+gestion_projets
+```
 
-Modifier les paramètres suivants dans le fichier `.env` :
+Ouvrir le fichier `.env` et vérifier les paramètres suivants :
 
 ```env
 APP_URL=http://127.0.0.1:8000
@@ -95,9 +99,11 @@ DB_USERNAME=root
 DB_PASSWORD=
 ```
 
-Adapter le nom d'utilisateur et le mot de passe selon votre configuration MySQL.
+Adapter le nom d'utilisateur et le mot de passe selon la configuration MySQL utilisée.
 
 ### 4. Exécuter les migrations
+
+Créer les tables de la base de données :
 
 ```bash
 php artisan migrate
@@ -105,15 +111,17 @@ php artisan migrate
 
 ### 5. Créer les comptes de démonstration
 
+Exécuter la commande suivante :
+
 ```bash
 php artisan db:seed --class=DemoAccountsSeeder
 ```
 
 Cette commande crée trois comptes de démonstration correspondant aux rôles Admin, Chef de projet et Membre.
 
-### 6. Installer le Frontend React
+### 6. Installer les dépendances du Frontend
 
-Ouvrir un deuxième terminal :
+Depuis la racine du projet :
 
 ```bash
 cd frontend
@@ -122,29 +130,48 @@ npm install
 
 ## Lancement de l'application
 
-### Terminal 1 — Backend Laravel
+### Lancer le Backend et l'application
 
-Depuis le dossier principal :
+Revenir au dossier principal du projet :
+
+```bash
+cd ..
+```
+
+Démarrer le serveur Laravel :
 
 ```bash
 php artisan serve --host=127.0.0.1 --port=8000
 ```
 
-### Terminal 2 — Frontend React
+Ouvrir ensuite l'application dans le navigateur :
 
-Depuis le dossier `frontend` :
+http://127.0.0.1:8000
+
+La version frontend compilée est incluse dans le dépôt GitHub.
+
+### Mode développement du Frontend
+
+Pour travailler sur le code React, ouvrir un deuxième terminal :
 
 ```bash
+cd frontend
 npm run dev
 ```
 
-Ouvrir ensuite l'adresse affichée par Vite dans le navigateur, généralement :
+Ouvrir l'adresse locale affichée par Vite dans le terminal, généralement :
 
-`http://localhost:5173`
+http://localhost:5173
+
+Après toute modification du frontend destinée à la version compilée, exécuter depuis le dossier `frontend` :
+
+```bash
+npm run build
+```
 
 ## Comptes de démonstration
 
-Les comptes suivants sont destinés aux tests en environnement local.
+Les comptes suivants permettent de tester les différents rôles de la plateforme en environnement local.
 
 | Rôle | Email | Mot de passe |
 |---|---|---|
