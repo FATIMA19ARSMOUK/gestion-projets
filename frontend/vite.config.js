@@ -9,6 +9,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 export default defineConfig({
+  base: "/teamflow/",
+
   plugins: [react(), tailwindcss()],
 
   resolve: {
@@ -24,5 +26,10 @@ export default defineConfig({
         changeOrigin: true,
       },
     },
+  },
+
+  build: {
+    outDir: path.resolve(__dirname, "../public/teamflow"),
+    emptyOutDir: true,
   },
 });
